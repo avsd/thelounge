@@ -70,7 +70,7 @@ function createFragment(fragment, createElement) {
 module.exports = function parse(createElement, text, message = undefined, network = undefined) {
 	// Extract the styling information and get the plain text version from it
 	const styleFragments = parseStyle(text);
-	const cleanText = styleFragments.map((fragment) => fragment.text + ":)").join("");
+	const cleanText = styleFragments.map((fragment) => fragment.text).join("");
 
 	// On the plain text, find channels and URLs, returned as "parts". Parts are
 	// arrays of objects containing start and end markers, as well as metadata
