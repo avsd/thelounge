@@ -50,6 +50,7 @@ const socket = require("../js/socket");
 const upload = require("../js/upload");
 const Mousetrap = require("mousetrap");
 const {wrapCursor} = require("undate");
+const encryptDecrypt = require("../js/libs/encryption");
 
 const formattingHotkeys = {
 	k: "\x03",
@@ -216,7 +217,7 @@ export default {
 				}
 			}
 
-			socket.emit("input", {target, text});
+			socket.emit("input", {target, text: encryptDecrypt(text)});
 		},
 		openFileUpload() {
 			this.$refs.uploadInput.click();

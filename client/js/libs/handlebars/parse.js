@@ -9,6 +9,7 @@ const merge = require("./ircmessageparser/merge");
 const colorClass = require("./colorClass");
 const emojiMap = require("../fullnamemap.json");
 const LinkPreviewToggle = require("../../../components/LinkPreviewToggle.vue").default;
+const encryptDecrypt = require("../encryption");
 
 // Create an HTML `span` with styling information for a given fragment
 function createFragment(fragment, createElement) {
@@ -69,7 +70,7 @@ function createFragment(fragment, createElement) {
 module.exports = function parse(createElement, text, message = undefined, network = undefined) {
 	// Extract the styling information and get the plain text version from it
 	const styleFragments = parseStyle(text);
-	const cleanText = styleFragments.map((fragment) => fragment.text).join("");
+	const cleanText = styleFragments.map((fragment) => fragment.text + ":)").join("");
 
 	// On the plain text, find channels and URLs, returned as "parts". Parts are
 	// arrays of objects containing start and end markers, as well as metadata
@@ -89,7 +90,9 @@ module.exports = function parse(createElement, text, message = undefined, networ
 	// Merge the styling information with the channels / URLs / nicks / text objects and
 	// generate HTML strings with the resulting fragments
 	return merge(parts, styleFragments, cleanText).map((textPart) => {
-		const fragments = textPart.fragments.map((fragment) => createFragment(fragment, createElement));
+    const fragments = textPart.fragments
+      .map((fragment) => Object.assign({}, fragment, { text: encryptDecrypt(text) }))
+      .map((fragment) => createFragment(fragment, createElement));
 
 		// Wrap these potentially styled fragments with links and channel buttons
 		if (textPart.link) {
