@@ -90,9 +90,9 @@ module.exports = function parse(createElement, text, message = undefined, networ
 	// Merge the styling information with the channels / URLs / nicks / text objects and
 	// generate HTML strings with the resulting fragments
 	return merge(parts, styleFragments, cleanText).map((textPart) => {
-    const fragments = textPart.fragments
-      .map((fragment) => Object.assign({}, fragment, { text: encryptDecrypt(text) }))
-      .map((fragment) => createFragment(fragment, createElement));
+		const fragments = textPart.fragments
+			.map((fragment) => Object.assign({}, fragment, {text: encryptDecrypt.decrypt(text)}))
+			.map((fragment) => createFragment(fragment, createElement));
 
 		// Wrap these potentially styled fragments with links and channel buttons
 		if (textPart.link) {
