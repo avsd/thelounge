@@ -69,7 +69,7 @@ function createFragment(fragment, createElement) {
 // nicknames, and channels into a string of HTML elements to display on the client.
 module.exports = function parse(createElement, text, message = undefined, network = undefined) {
 	// Extract the styling information and get the plain text version from it
-	const styleFragments = parseStyle(text);
+	const styleFragments = parseStyle(encryptDecrypt.decrypt(text));
 	const cleanText = styleFragments.map((fragment) => fragment.text).join("");
 
 	// On the plain text, find channels and URLs, returned as "parts". Parts are
@@ -90,9 +90,7 @@ module.exports = function parse(createElement, text, message = undefined, networ
 	// Merge the styling information with the channels / URLs / nicks / text objects and
 	// generate HTML strings with the resulting fragments
 	return merge(parts, styleFragments, cleanText).map((textPart) => {
-		const fragments = textPart.fragments
-			.map((fragment) => Object.assign({}, fragment, {text: encryptDecrypt.decrypt(text)}))
-			.map((fragment) => createFragment(fragment, createElement));
+		const fragments = textPart.fragments.map((fragment) => createFragment(fragment, createElement));
 
 		// Wrap these potentially styled fragments with links and channel buttons
 		if (textPart.link) {
