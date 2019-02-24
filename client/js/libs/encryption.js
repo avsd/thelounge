@@ -1,20 +1,7 @@
-/**
- * def encrypt(k, d):
- *    """Function that both decrypts and encrypts"""
- *    i = j = 0
- *    s = list(range(256))
- *    for x in range(256):
- *        j = (j + s[x % 256] + (k[x % len(k)])) % 256
- *        s[x], s[j] = s[j], s[x]
- *    i = j = 0
- *    for x in d:
- *        i = (i + 1) % 256
- *        j = (j + s[i]) % 256
- *        s[i], s[j] = s[j], s[i]
- *        z = s[i] + s[j]
- *		  	yield x ^ s[z % 256]
- */
-const key = "my very secret key";
+const key = "my very secret key2";
+const ENCRYPTED = "3ncrypt3d: ";
+const NON_ENCRYPTED_PREFIX = "*";
+const LOCK = decodeURIComponent("%F0%9F%94%90") + " ";
 
 module.exports = {
 	_encryptDecrypt(k, d) {
@@ -51,9 +38,21 @@ module.exports = {
 		}, "");
 	},
 	encrypt(value) {
-		return this._encryptDecrypt(key, value);
+		if (value.startsWith(NON_ENCRYPTED_PREFIX)) {
+			return value.slice(NON_ENCRYPTED_PREFIX.length);
+		}
+
+		return ENCRYPTED + btoa(this._encryptDecrypt(key, unescape(encodeURIComponent(value))));
 	},
 	decrypt(value) {
-		return this._encryptDecrypt(key, value);
+		try {
+			if (!value.startsWith(ENCRYPTED)) {
+				return value;
+			}
+
+			return LOCK + decodeURIComponent(escape(this._encryptDecrypt(key, atob(value.slice(ENCRYPTED.length)))));
+		} catch (e) {
+			return value;
+		}
 	},
 };

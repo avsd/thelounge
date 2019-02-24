@@ -217,7 +217,7 @@ export default {
 				}
 			}
 
-			socket.emit("input", {target, text: encryptDecrypt.encrypt(text)});
+			socket.emit("input", {target, text: text.startsWith("/") ? text : encryptDecrypt.encrypt(text)});
 		},
 		openFileUpload() {
 			this.$refs.uploadInput.click();
