@@ -9,7 +9,7 @@ const merge = require("./ircmessageparser/merge");
 const colorClass = require("./colorClass");
 const emojiMap = require("../fullnamemap.json");
 const LinkPreviewToggle = require("../../../components/LinkPreviewToggle.vue").default;
-const encryptDecrypt = require("../encryption");
+const encryption = require("../encryption");
 
 // Create an HTML `span` with styling information for a given fragment
 function createFragment(fragment, createElement) {
@@ -69,7 +69,7 @@ function createFragment(fragment, createElement) {
 // nicknames, and channels into a string of HTML elements to display on the client.
 module.exports = function parse(createElement, text, message = undefined, network = undefined) {
 	// Extract the styling information and get the plain text version from it
-	const styleFragments = parseStyle(encryptDecrypt.decrypt(text));
+	const styleFragments = parseStyle(encryption.decrypt(text));
 	const cleanText = styleFragments.map((fragment) => fragment.text).join("");
 
 	// On the plain text, find channels and URLs, returned as "parts". Parts are
